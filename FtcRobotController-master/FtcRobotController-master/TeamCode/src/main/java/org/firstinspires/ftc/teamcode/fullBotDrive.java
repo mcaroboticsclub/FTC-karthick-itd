@@ -65,6 +65,14 @@ public class fullBotDrive extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        viperH.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperH.setTargetPosition(0);
+        viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        viperV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperV.setTargetPosition(0);
+        viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         // Only Start Code And Movement When Start Button Is Pressed
         waitForStart();
 
@@ -146,7 +154,7 @@ public class fullBotDrive extends LinearOpMode {
             }
 
             if (gamepad2.dpad_down) {
-                wrist.setPosition(0.9);
+                wrist.setPosition(0.8975);
             }
 
             else if (gamepad2.dpad_left) {
@@ -158,11 +166,11 @@ public class fullBotDrive extends LinearOpMode {
             }
 
             while (gamepad2.right_bumper) {
-                bucket.setPosition(bucket.getPosition() + 0.005);
+                bucket.setPosition(0.875);
             }
 
             while (gamepad2.left_bumper) {
-                bucket.setPosition(bucket.getPosition() - 0.005);
+                bucket.setPosition(0.1);
             }
 
             if (gamepad2.left_stick_x != 0) {
