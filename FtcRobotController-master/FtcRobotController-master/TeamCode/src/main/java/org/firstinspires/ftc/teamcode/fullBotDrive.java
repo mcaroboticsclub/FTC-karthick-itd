@@ -214,7 +214,7 @@ public class fullBotDrive extends LinearOpMode {
             }
 
             while (gamepad2.right_bumper) {
-                bucket.setPosition(0.875);
+                bucket.setPosition(0.850);
             }
 
             while (gamepad2.left_bumper) {
