@@ -117,8 +117,8 @@ public class fullBotDrive extends LinearOpMode {
                     viperH.setPower(speedFactor);
                     viperH.setTargetPosition((int) (viperH.getCurrentPosition() - 300 * speedFactor));
 
-                    if (viperH.getTargetPosition() < -2100) {
-                        viperH.setTargetPosition(-2100);
+                    if (viperH.getTargetPosition() < -2200) {
+                        viperH.setTargetPosition(-2200);
                     }
 
                     viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -134,11 +134,6 @@ public class fullBotDrive extends LinearOpMode {
 
                     viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 }
-            }
-
-            // Otherwise, if its not moving,stop motor.
-            else {
-                viperH.setPower(0);
             }
 
             // If gamepad 2's x button is pushed, lower the suspension's linear actuators.
@@ -178,13 +173,13 @@ public class fullBotDrive extends LinearOpMode {
 
             // If gamepad 2's a button is pushed, close the specimen claw.
             if (gamepad2.a) {
-                sClawL.setPosition(0.35);
-                sClawR.setPosition(0.5);
+                sClawL.setPosition(0.125);
+                sClawR.setPosition(0.85);
             }
 
             // Otherwise, if gamepad 2's b button is pushed, close the specimen claw.
             else if (gamepad2.b) {
-                sClawL.setPosition(0.55);
+                sClawL.setPosition(0.30);
                 sClawR.setPosition(0.21);
             }
 
