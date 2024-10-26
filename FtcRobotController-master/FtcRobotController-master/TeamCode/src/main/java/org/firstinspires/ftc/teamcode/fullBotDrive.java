@@ -67,11 +67,9 @@ public class fullBotDrive extends LinearOpMode {
 
         viperH.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperH.setTargetPosition(0);
-        viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         viperV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         viperV.setTargetPosition(0);
-        viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Only Start Code And Movement When Start Button Is Pressed
         waitForStart();
@@ -86,19 +84,56 @@ public class fullBotDrive extends LinearOpMode {
 
             // TODO: Set viper motors to run using encoders. https://docs.revrobotics.com/duo-control/hello-robot-blocks/part-3/using-encoder
 
-            // If gamepad 2's left stick is pushed up or down, move the vertical viper.
+            // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
             if (gamepad2.left_stick_y != 0) {
-                viperV.setPower(gamepad2.left_stick_y * speedFactor);
-            }
 
-            // Otherwise, if its not moving, stop motor.
-            else {
-                viperV.setPower(0);
+                if (gamepad2.left_stick_y < 0) {
+                    viperV.setPower(speedFactor);
+                    viperV.setTargetPosition((int) (viperV.getCurrentPosition() - 300 * speedFactor));
+
+                    if (viperV.getTargetPosition() < -11600) {
+                        viperV.setTargetPosition(-11600);
+                    }
+
+                    viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+                else {
+                    viperV.setPower(speedFactor);
+                    viperV.setTargetPosition((int) (viperV.getCurrentPosition() + 300 * speedFactor));
+
+                    if (viperV.getTargetPosition() > 0) {
+                        viperV.setTargetPosition(0);
+                    }
+
+                    viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
             }
 
             // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
             if (gamepad2.right_stick_y != 0) {
-                viperH.setPower(gamepad2.right_stick_y * speedFactor);
+
+                if (gamepad2.right_stick_y < 0) {
+                    viperH.setPower(speedFactor);
+                    viperH.setTargetPosition((int) (viperH.getCurrentPosition() - 300 * speedFactor));
+
+                    if (viperH.getTargetPosition() < -2100) {
+                        viperH.setTargetPosition(-2100);
+                    }
+
+                    viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
+
+                else {
+                    viperH.setPower(speedFactor);
+                    viperH.setTargetPosition((int) (viperH.getCurrentPosition() + 300 * speedFactor));
+
+                    if (viperH.getTargetPosition() > 0) {
+                        viperH.setTargetPosition(0);
+                    }
+
+                    viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                }
             }
 
             // Otherwise, if its not moving,stop motor.
@@ -154,7 +189,7 @@ public class fullBotDrive extends LinearOpMode {
             }
 
             if (gamepad2.dpad_down) {
-                wrist.setPosition(0.8975);
+                wrist.setPosition(0.8950);
             }
 
             else if (gamepad2.dpad_left) {
@@ -163,6 +198,19 @@ public class fullBotDrive extends LinearOpMode {
 
             else if (gamepad2.dpad_up) {
                 wrist.setPosition(0.5);
+            }
+
+            else if (gamepad2.dpad_right) {
+                wrist.setPosition(0.26);
+                sleep(750);
+
+                intake.setPower(1);
+                sleep(1500);
+
+                intake.setPower(0);
+                wrist.setPosition(0.5);
+
+                sleep(500);
             }
 
             while (gamepad2.right_bumper) {
