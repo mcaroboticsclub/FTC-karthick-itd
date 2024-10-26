@@ -26,6 +26,9 @@ public class fullBotDrive extends LinearOpMode {
     Servo sClawL = null;
     Servo sClawR = null;
     CRServo intake = null;
+    Servo wrist = null;
+    Servo bucket = null;
+    Servo susGrip = null;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -44,12 +47,19 @@ public class fullBotDrive extends LinearOpMode {
         sClawL = hardwareMap.servo.get("Claw_Left");
         sClawR = hardwareMap.servo.get("Claw_Right");
         intake = hardwareMap.crservo.get("Intake");
+        wrist = hardwareMap.servo.get("Intake_Wrist");
+        bucket = hardwareMap.servo.get("Bucket");
+        susGrip = hardwareMap.servo.get("Suspension_Grip");
 
-        // Set The Motors To Brake
+        // Set All Motors To Brake
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        viperV.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        viperH.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        susL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        susR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Reverse Direction Of One Side's Wheel Motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -59,65 +69,122 @@ public class fullBotDrive extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
             // Set drivetrain to move based off of the inputs of the left and right sticks of gamepad 1.
             frontLeft.setPower((-gamepad1.left_stick_y + gamepad1.left_stick_x + gamepad1.right_stick_x) * speedFactor);
             backLeft.setPower((-gamepad1.left_stick_y - gamepad1.left_stick_x + gamepad1.right_stick_x) * speedFactor);
             frontRight.setPower((-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * speedFactor);
             backRight.setPower((-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * speedFactor);
 
-            // TODO: Set viper motors to run using encoders.
+            // TODO: Set viper motors to run using encoders. https://docs.revrobotics.com/duo-control/hello-robot-blocks/part-3/using-encoder
 
-            if (-gamepad2.left_stick_y > 0) {
-                viperV.setPower(-gamepad2.left_stick_y * speedFactor);
-            } else if (-gamepad2.left_stick_y < 0) {
-                viperV.setPower(-gamepad2.left_stick_y * speedFactor);
-            } else {
+            // If gamepad 2's left stick is pushed up or down, move the vertical viper.
+            if (gamepad2.left_stick_y != 0) {
+                viperV.setPower(gamepad2.left_stick_y * speedFactor);
+            }
+
+            // Otherwise, if its not moving, stop motor.
+            else {
                 viperV.setPower(0);
             }
 
-            if (-gamepad2.right_stick_y > 0) {
-                viperH.setPower(-gamepad2.right_stick_y * speedFactor);
-            } else if (-gamepad2.right_stick_y < 0) {
-                viperH.setPower(-gamepad2.right_stick_y * speedFactor);
-            } else {
+            // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
+            if (gamepad2.right_stick_y != 0) {
+                viperH.setPower(gamepad2.right_stick_y * speedFactor);
+            }
+
+            // Otherwise, if its not moving,stop motor.
+            else {
                 viperH.setPower(0);
             }
 
-            if (gamepad2.b) {
-                susL.setPower(1);
-                susR.setPower(1);
-            } else if (gamepad2.a) {
+            // If gamepad 2's x button is pushed, lower the suspension's linear actuators.
+            if (gamepad2.x) {
                 susL.setPower(-1);
                 susR.setPower(-1);
-            } else {
+            }
+
+            // Otherwise, if gamepad 2's y button is pushed, lift the suspension's linear actuators.
+            else if (gamepad2.y) {
+                susL.setPower(1);
+                susR.setPower(1);
+            }
+
+            // Otherwise, if neither are pressed, stop the suspension mechanism from moving.
+            else {
                 susL.setPower(0);
                 susR.setPower(0);
             }
 
+            // If gamepad 2's right trigger is pulled, activate the intake's servo to pull samples in.
             if (gamepad2.right_trigger > 0) {
-                intake.setPower(1);
-            } else if (gamepad2.left_trigger > 0) {
                 intake.setPower(-1);
-            } else {
+            }
+
+            // Otherwise, if gamepad 2's left trigger is pulled, activate the intake's servo to spit samples out.
+            else if (gamepad2.left_trigger > 0) {
+                intake.setPower(1);
+            }
+
+            // Otherwise, if neither are pulled, stop the intake's movement.
+            else {
                 intake.setPower(0);
             }
 
             // TODO: Fix positions of claw servos.
 
-            if (gamepad2.x) {
-                sClawL.setPosition(0.5);
+            // If gamepad 2's a button is pushed, close the specimen claw.
+            if (gamepad2.a) {
+                sClawL.setPosition(0.35);
                 sClawR.setPosition(0.5);
-            } else if (gamepad2.y) {
-                sClawL.setPosition(0);
-                sClawR.setPosition(0);
             }
 
+            // Otherwise, if gamepad 2's b button is pushed, close the specimen claw.
+            else if (gamepad2.b) {
+                sClawL.setPosition(0.55);
+                sClawR.setPosition(0.21);
+            }
+
+            if (gamepad2.dpad_down) {
+                wrist.setPosition(0.9);
+            }
+
+            else if (gamepad2.dpad_left) {
+                wrist.setPosition(0.26);
+            }
+
+            else if (gamepad2.dpad_up) {
+                wrist.setPosition(0.5);
+            }
+
+            while (gamepad2.right_bumper) {
+                bucket.setPosition(bucket.getPosition() + 0.005);
+            }
+
+            while (gamepad2.left_bumper) {
+                bucket.setPosition(bucket.getPosition() - 0.005);
+            }
+
+            if (gamepad2.left_stick_x != 0) {
+                susGrip.setPosition(gamepad2.left_stick_x);
+            }
+
+            // TODO: Add limits
+            // TODO: Add Initial Positions
+            // TODO: Add Hotkeys
+            // TODO: Add Buttons For Positions
+
+            // If gamepad 1's a button is pushed, set the max speed of all parts on the robot to full power.
             if (gamepad1.a) {
                 speedFactor = 1.0;
-            } else if (gamepad2.b) {
+            }
+
+            // Otherwise, if gamepad 1's b button is pushed, set the max speed to 50% power.
+            else if (gamepad2.b) {
                 speedFactor = 0.5;
             }
 
+            // Add telemetry data for all parts of the robot, for all motors and servos, for power and position, and for the current speed factor.
             telemetry.addData("Front Left Motor Power", frontLeft.getPower());
             telemetry.addData("Front Left Motor Position", frontLeft.getCurrentPosition());
             telemetry.addData("Front Right Motor Power", frontRight.getPower());
@@ -136,9 +203,12 @@ public class fullBotDrive extends LinearOpMode {
             telemetry.addData("Right Suspension Motor Position", susR.getCurrentPosition());
             telemetry.addData("Left Claw Servo Position", sClawL.getPosition());
             telemetry.addData("Right Claw Servo Position", sClawR.getPosition());
-            telemetry.addData("Intake Motor Power", intake.getPower());
+            telemetry.addData("Intake Servo Power", intake.getPower());
+            telemetry.addData("Wrist Servo Position", wrist.getPosition());
+            telemetry.addData("Bucket Servo Position", bucket.getPosition());
             telemetry.addData("Speed Factor", speedFactor);
 
+            // Update the telemetry.
             telemetry.update();
         }
     }
