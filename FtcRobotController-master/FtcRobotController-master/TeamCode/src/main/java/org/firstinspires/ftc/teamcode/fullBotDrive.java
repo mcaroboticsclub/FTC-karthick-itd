@@ -189,7 +189,7 @@ public class fullBotDrive extends LinearOpMode {
             }
 
             if (gamepad2.dpad_down) {
-                wrist.setPosition(0.8950);
+                wrist.setPosition(0.8975);
             }
 
             else if (gamepad2.dpad_left) {
