@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
+import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
@@ -11,8 +15,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 /*
  * Test the dashboard gamepad integration.
  */
-@Autonomous(name = "Test Auton Spec + Bask dont run", group = "MCA Eagles Group")
-public class autonTest extends LinearOpMode {
+@Autonomous(name = "Spec + Bucket Spline", group = "MCA Eagles Group")
+public class buckAutoSpline extends LinearOpMode {
     // Define All Motors
     DcMotor frontLeft = null;
     DcMotor frontRight = null;
@@ -86,9 +90,23 @@ public class autonTest extends LinearOpMode {
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        public void runOpMode() {
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        MecanumDrive drive = new MecanumDrive(hardwareMap, startPose);
 
-        }
+        Action bucketTrajectory = drive.actionBuilder(new Pose2d(-7.62, -63.00, Math.toRadians(90.00)))
+                .splineTo(new Vector2d(-7.85, -28.62), Math.toRadians(90.38))
+                .splineTo(new Vector2d(-36.46, -44.54), Math.toRadians(209.09))
+                .splineTo(new Vector2d(-39.23, -25.62), Math.toRadians(91.36))
+                .splineTo(new Vector2d(-60.00, -59.77), Math.toRadians(238.70))
+                .splineTo(new Vector2d(-49.85, -26.77), Math.toRadians(72.90))
+                .splineTo(new Vector2d(-64.62, -60.92), Math.toRadians(246.61))
+                .splineTo(new Vector2d(-59.08, -25.15), Math.toRadians(81.20))
+                .splineTo(new Vector2d(-63.69, -57.23), Math.toRadians(261.81))
+                .splineTo(new Vector2d(-49.38, -6.46), Math.toRadians(74.26))
+                .splineTo(new Vector2d(-22.62, 5.77), Math.toRadians(24.56))
+                .build();
+
+        waitForStart();
+        Actions.runBlocking(bucketTrajectory);
     }
 }
-

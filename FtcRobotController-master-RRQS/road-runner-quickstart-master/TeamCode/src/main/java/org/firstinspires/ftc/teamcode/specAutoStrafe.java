@@ -9,9 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-
-@Autonomous(name = "Specimen Auton", group = "MCA Eagles Programs")
-public final class autonSpec extends LinearOpMode {
+@Autonomous(name = "Specimen Auto Strafe", group = "MCA Eagles Programs")
+public final class specAutoStrafe extends LinearOpMode {
 
     DcMotor verticalViper = null;
     Servo clawL, clawR;
@@ -60,25 +59,25 @@ public final class autonSpec extends LinearOpMode {
         verticalViper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         Pose2d beginPose = new Pose2d(9, -64, Math.toRadians(270));
-        Pose2d specCenter = new Pose2d(0,-33.3,Math.toRadians(270));
-        Pose2d spec1 = new Pose2d(-9,-33.3,Math.toRadians(270));
-        Pose2d spec2 = new Pose2d(-3,-33.3,Math.toRadians(270));
-        Pose2d spec3 = new Pose2d(0,-33.3,Math.toRadians(270));
-        Pose2d sampleStart = new Pose2d(36, -36.8, Math.toRadians(90));
-        Pose2d sampleUp = new Pose2d(36,-10,Math.toRadians(90));
-        Vector2d rotatePoint = new Vector2d(0,-48);
+        Pose2d specCenter = new Pose2d(0, -33.3, Math.toRadians(270));
+        Pose2d spec1 = new Pose2d(-9, -33.3, Math.toRadians(270));
+        Pose2d spec2 = new Pose2d(-3, -33.3, Math.toRadians(270));
+        Pose2d spec3 = new Pose2d(6, -33.3, Math.toRadians(270));
+        Pose2d sampleStart = new Pose2d(36, -39.8, Math.toRadians(90));
+        Pose2d sampleUp = new Pose2d(36, -10, Math.toRadians(90));
+        Vector2d rotatePoint = new Vector2d(0, -48);
 
-        Pose2d sam1 = new Pose2d(45,-20, Math.toRadians(90));
-        Pose2d sam2 = new Pose2d(53,-20, Math.toRadians(90));
-        Pose2d sam3 = new Pose2d(61,-20, Math.toRadians(90));
+        Pose2d sam1 = new Pose2d(45, -20, Math.toRadians(90));
+        Pose2d sam2 = new Pose2d(56, -20, Math.toRadians(90));
+        Pose2d sam3 = new Pose2d(63, -20, Math.toRadians(90));
 
-        Pose2d net1 = new Pose2d(45, -57, Math.toRadians(90));
-        Pose2d net2 = new Pose2d(53, -57, Math.toRadians(90));
-        Pose2d net3 = new Pose2d(61, -57, Math.toRadians(90));
+        Pose2d net1 = new Pose2d(45, -60, Math.toRadians(90));
+        Pose2d net2 = new Pose2d(53, -60, Math.toRadians(90));
+        Pose2d net3 = new Pose2d(61, -60, Math.toRadians(90));
 
-        Pose2d waitArea = new Pose2d(58, -36, Math.toRadians(90));
-        Pose2d park = new Pose2d(38,0,Math.toRadians(270));
-        Pose2d specCollect = new Pose2d(55,-58, Math.toRadians(90));
+        Pose2d waitArea = new Pose2d(58, -55, Math.toRadians(90));
+        Pose2d park = new Pose2d(38, 0, Math.toRadians(270));
+        Pose2d specCollect = new Pose2d(55, -64, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -98,14 +97,23 @@ public final class autonSpec extends LinearOpMode {
                 .strafeTo(sampleUp.position)
                 .strafeTo(sam1.position)
                 .strafeTo(net1.position)
+
+                /*
                 .strafeTo(sam1.position)
                 .strafeTo(sam2.position)
                 .strafeTo(net2.position)
+
+
                 .strafeTo(sam2.position)
                 .strafeTo(sam3.position)
                 .strafeTo(net3.position)
+
+                 */
+
+
                 .strafeToLinearHeading(waitArea.position, waitArea.heading)
                 .build();
+
         Action parkFromSample = drive.actionBuilder(waitArea)
                 .splineTo(new Vector2d(46.50, -29.11), Math.toRadians(-87.59))
                 .splineTo(new Vector2d(28.62, -46.50), Math.toRadians(186.01))
@@ -123,15 +131,14 @@ public final class autonSpec extends LinearOpMode {
                 .strafeTo(spec2.position)
                 .build();
 
-        //Action goToSpecPickup2 = drive.actionBuilder(spec2)
-        //        .strafeTo(rotatePoint)
-        //        .strafeToLinearHeading(specCollect.position, specCollect.heading)
-        //        .build();
-        //Action specCycle2 = drive.actionBuilder(specCollect)
-        //        .strafeTo(rotatePoint)
-        //        .strafeToLinearHeading(specCenter.position, specCenter.heading)
-        //        .strafeTo(spec3.position)
-        //        .build();
+        Action goToSpecPickup2 = drive.actionBuilder(spec2)
+                .strafeTo(rotatePoint)
+                .strafeToLinearHeading(specCollect.position, specCollect.heading)
+                .build();
+        Action specCycle2 = drive.actionBuilder(specCollect)
+                .strafeToLinearHeading(specCenter.position, specCenter.heading)
+                .strafeTo(spec3.position)
+                .build();
 
         //Action combined = new SequentialAction(startToSpec,specCenterToSpec1, getAllSamples, goToSpecPickup, specCycle1);
         close();
@@ -141,10 +148,31 @@ public final class autonSpec extends LinearOpMode {
         Actions.runBlocking(startToSpec);
         Actions.runBlocking(specCenterToSpec1);
         hangSpec();
-        sleep(1000);
         Actions.runBlocking(getAllSamples);
         sleep(1000);
-        Actions.runBlocking(parkFromSample);
+
+        Actions.runBlocking(goToSpecPickup);
+        open();
+        sleep(500);
+        close();
+        sleep(2000);
+        startRaise();
+        sleep(1000);
+        Actions.runBlocking(specCycle1);
+        hangSpec();
+        sleep(2000);
+
+        Actions.runBlocking(goToSpecPickup2);
+        open();
+        sleep(500);
+        close();
+        sleep(2000);
+        startRaise();
+        sleep(1000);
+        Actions.runBlocking(specCycle2);
+        hangSpec();
+        sleep(2000);
+
         sleep(5000);
 
     }
