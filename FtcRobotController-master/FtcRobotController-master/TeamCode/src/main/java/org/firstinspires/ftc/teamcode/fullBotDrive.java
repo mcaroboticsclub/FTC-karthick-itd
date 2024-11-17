@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -19,8 +20,8 @@ public class fullBotDrive extends LinearOpMode {
     DcMotor frontRight = null;
     DcMotor backLeft = null;
     DcMotor backRight = null;
-    DcMotor viperV = null;
-    DcMotor viperH = null;
+    DcMotorEx viperV = null;
+    DcMotorEx viperH = null;
     DcMotor susL = null;
     DcMotor susR = null;
     Servo sClawL = null;
@@ -38,8 +39,8 @@ public class fullBotDrive extends LinearOpMode {
         frontRight = hardwareMap.dcMotor.get("Front_Right");
         backLeft = hardwareMap.dcMotor.get("Back_Left");
         backRight = hardwareMap.dcMotor.get("Back_Right");
-        viperV = hardwareMap.dcMotor.get("Viper_Vertical");
-        viperH = hardwareMap.dcMotor.get("Viper_Horizontal");
+        viperV = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Vertical");
+        viperH = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Horizontal");
         susL = hardwareMap.dcMotor.get("Suspension_Left");
         susR = hardwareMap.dcMotor.get("Suspension_Right");
 
@@ -66,10 +67,12 @@ public class fullBotDrive extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         viperH.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viperH.setTargetPosition(0);
+        viperV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        viperV.setVelocity(300);
 
-        viperV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        viperV.setTargetPosition(0);
+        viperH.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperH.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        viperH.setVelocity(200);
 
         // Only Start Code And Movement When Start Button Is Pressed
         waitForStart();
@@ -85,55 +88,29 @@ public class fullBotDrive extends LinearOpMode {
             // TODO: Set viper motors to run using encoders. https://docs.revrobotics.com/duo-control/hello-robot-blocks/part-3/using-encoder
 
             // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
-            if (gamepad2.left_stick_y != 0) {
+            if (gamepad2.left_stick_y < 0 && viperV.getCurrentPosition() > -11500) {
+                viperV.setPower(gamepad2.left_stick_y * speedFactor);
+            }
 
-                if (gamepad2.left_stick_y < 0) {
-                    viperV.setPower(speedFactor);
-                    viperV.setTargetPosition((int) (viperV.getCurrentPosition() - 300 * speedFactor));
+            else if (gamepad2.left_stick_y > 0) {
+                viperV.setPower(gamepad2.left_stick_y * speedFactor);
+            }
 
-                    if (viperV.getTargetPosition() < -11600) {
-                        viperV.setTargetPosition(-11600);
-                    }
-
-                    viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-
-                else {
-                    viperV.setPower(speedFactor);
-                    viperV.setTargetPosition((int) (viperV.getCurrentPosition() + 300 * speedFactor));
-
-                    if (viperV.getTargetPosition() > 0) {
-                        viperV.setTargetPosition(0);
-                    }
-
-                    viperV.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
+            else {
+                viperV.setPower(0);
             }
 
             // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
-            if (gamepad2.right_stick_y != 0) {
+            if (gamepad2.right_stick_y < 0 && viperH.getCurrentPosition() > -2000) {
+                viperH.setPower(gamepad2.right_stick_y * speedFactor);
+            }
 
-                if (gamepad2.right_stick_y < 0) {
-                    viperH.setPower(speedFactor);
-                    viperH.setTargetPosition((int) (viperH.getCurrentPosition() - 300 * speedFactor));
+            else if (gamepad2.right_stick_y > 0) {
+                viperH.setPower(gamepad2.right_stick_y * speedFactor);
+            }
 
-                    if (viperH.getTargetPosition() < -2200) {
-                        viperH.setTargetPosition(-2200);
-                    }
-
-                    viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-
-                else {
-                    viperH.setPower(speedFactor);
-                    viperH.setTargetPosition((int) (viperH.getCurrentPosition() + 300 * speedFactor));
-
-                    if (viperH.getTargetPosition() > 0) {
-                        viperH.setTargetPosition(0);
-                    }
-
-                    viperH.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
+            else {
+                viperH.setPower(0);
             }
 
             // If gamepad 2's x button is pushed, lower the suspension's linear actuators.
@@ -173,14 +150,14 @@ public class fullBotDrive extends LinearOpMode {
 
             // If gamepad 2's a button is pushed, close the specimen claw.
             if (gamepad2.a) {
-                sClawL.setPosition(0.125);
-                sClawR.setPosition(0.85);
+                sClawL.setPosition(0.4875);
+                sClawR.setPosition(0.4625);
             }
 
             // Otherwise, if gamepad 2's b button is pushed, close the specimen claw.
             else if (gamepad2.b) {
-                sClawL.setPosition(0.30);
-                sClawR.setPosition(0.21);
+                sClawL.setPosition(0.3);
+                sClawR.setPosition(0.7);
             }
 
             if (gamepad2.dpad_down) {

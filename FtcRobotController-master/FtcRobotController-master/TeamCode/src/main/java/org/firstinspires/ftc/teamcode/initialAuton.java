@@ -1,10 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+
+import java.util.List;
 
 /*
  * Test the dashboard gamepad integration.
@@ -14,20 +22,14 @@ public class initialAuton extends LinearOpMode {
     DcMotor frontLeft, frontRight, backLeft, backRight;
     DcMotor verticalViper = null;
     Servo clawL, clawR;
-    double wheelDiameter = 96 / 25.4; //wheelDiameter in inches
-    int vertViperUpPos = -11000;
-    int vertViperDownPos = 0;
-    int specHangPos = -3200;
-
-    double convertToRot(double inches) {
-        return (inches / (wheelDiameter * (Math.PI))) * 537.6;
+    double wheelDiameter=96/25.4; //wheelDiameter in inches
+    double convertToRot(double inches){
+        return (inches/(wheelDiameter*(Math.PI)))*537.6;
     }
-
     //convert inches to rotations
-    public void move(double inches, int a, int b, int c, int d) {
+    public void move(double inches, int a, int b, int c, int d){
         move(inches, a, b, c, d, 0.5);
     }
-
     public void move(double inches, int a, int b, int c, int d, double power) {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -62,13 +64,12 @@ public class initialAuton extends LinearOpMode {
         frontLeft.setPower(0);
         frontRight.setPower(0);
     }
-
     public void moveWithEncoder(double e, int a, int b, int c, int d) {
         backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        int dist = (int) e;
+        int dist = (int)e;
         backLeft.setTargetPosition(backLeft.getCurrentPosition() + dist * a);
         backRight.setTargetPosition(backRight.getCurrentPosition() + dist * b);
         frontLeft.setTargetPosition(frontLeft.getCurrentPosition() + dist * c);
@@ -98,45 +99,40 @@ public class initialAuton extends LinearOpMode {
         frontRight.setPower(0);
     }
 
-    public void forward(double dist) {
+    public void forward(double dist){
 
-        move(dist, 1, 1, 1, 1);
+        move(dist, 1,1,1,1);
     }
-
-    public void backward(double dist) {
+    public void backward(double dist){
         move(dist, -1, -1, -1, -1);
     }
-
-    public void right(double dist) {
-        dist *= ((double) 1 / 0.9);
-        move(dist, -1, 1, 1, -1);
+    public void right(double dist){
+        dist*=((double)1/0.9);
+        move(dist, -1,1,1,-1);
     }
-
-    public void left(double dist) {
-        dist *= ((double) 1 / 0.9);
-        move(dist, 1, -1, -1, 1);
+    public void left(double dist){
+        dist*=((double)1/0.9);
+        move(dist, 1,-1,-1,1);
     } //7,
-
-    public void rotate(double angle) {
-        double val = ((double) 4290) * (angle / (double) 360);
-        moveWithEncoder(val, 1, -1, 1, -1);
+    public void rotate(double angle){
+        double val=((double)4290)*(angle/(double)360);
+        moveWithEncoder(val,1,-1,1,-1);
     }
-
-    public void moveVert(int pos) {
+    int vertViperUpPos = -11000;
+    int vertViperDownPos = 0;
+    int specHangPos = -3800;
+    public void moveVert(int pos){
         verticalViper.setTargetPosition(pos);
         verticalViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         verticalViper.setPower(0.75);
     }
-
-    public void moveVertToWall() {
+    public void moveVertToWall(){
         moveVert(0);
     }
-
-    public void moveVertDown() {
+    public void moveVertDown(){
         moveVert(vertViperDownPos);
     }
-
-    public void hangSpecimen() {
+    public void hangSpecimen(){
         moveVert(-6000);
         sleep(3000);
         backward(2);
@@ -149,14 +145,13 @@ public class initialAuton extends LinearOpMode {
         sleep(1000);
     }
 
-    public void close() {
-        clawL.setPosition(0.37);
-        clawR.setPosition(0.32);
+    public void close(){
+        clawL.setPosition(0.0895);
+        clawR.setPosition(0.865);
     }
-
-    public void open() {
-        clawL.setPosition(0.55);
-        clawR.setPosition(0.21);
+    public void open(){
+        clawL.setPosition(0.25);
+        clawR.setPosition(0.65);
     }
 
 
@@ -190,16 +185,16 @@ public class initialAuton extends LinearOpMode {
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch Play to start OpMode");
         telemetry.update();
-
+        close();
         waitForStart();
         //add commands here
-        close();
-        sleep(1000);
-        hangSpecimen();
-
-
+        backward(25.2);
         sleep(5000);
+        hangSpecimen();
+        sleep(2500);
+        //backward(25.2);
+        sleep(5000);
+
 
     }   // end runOpMode()
 }
-
