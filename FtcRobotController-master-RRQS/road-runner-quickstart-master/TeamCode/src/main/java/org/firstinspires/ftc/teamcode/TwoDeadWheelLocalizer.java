@@ -1,48 +1,29 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.roadrunner.DualNum;
-import com.acmerobotics.roadrunner.Rotation2d;
-import com.acmerobotics.roadrunner.Time;
-import com.acmerobotics.roadrunner.Twist2dDual;
-import com.acmerobotics.roadrunner.Vector2d;
-import com.acmerobotics.roadrunner.Vector2dDual;
-import com.acmerobotics.roadrunner.ftc.Encoder;
-import com.acmerobotics.roadrunner.ftc.FlightRecorder;
-import com.acmerobotics.roadrunner.ftc.OverflowEncoder;
-import com.acmerobotics.roadrunner.ftc.PositionVelocityPair;
-import com.acmerobotics.roadrunner.ftc.RawEncoder;
+import com.acmerobotics.roadrunner.*;
+import com.acmerobotics.roadrunner.ftc.*;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.messages.TwoDeadWheelInputsMessage;
 
+import java.lang.Math;
+
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
-    public static class Params {
-        public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
-        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
-    }
-
     public static Params PARAMS = new Params();
-
     public final Encoder par, perp;
     public final IMU imu;
-
+    private final double inPerTick;
     private int lastParPos, lastPerpPos;
     private Rotation2d lastHeading;
-
-    private final double inPerTick;
-
     private double lastRawHeadingVel, headingVelOffset;
     private boolean initialized;
-
     public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
@@ -106,16 +87,16 @@ public final class TwoDeadWheelLocalizer implements Localizer {
 
         Twist2dDual<Time> twist = new Twist2dDual<>(
                 new Vector2dDual<>(
-                        new DualNum<Time>(new double[] {
+                        new DualNum<Time>(new double[]{
                                 parPosDelta - PARAMS.parYTicks * headingDelta,
                                 parPosVel.velocity - PARAMS.parYTicks * headingVel,
                         }).times(inPerTick),
-                        new DualNum<Time>(new double[] {
+                        new DualNum<Time>(new double[]{
                                 perpPosDelta - PARAMS.perpXTicks * headingDelta,
                                 perpPosVel.velocity - PARAMS.perpXTicks * headingVel,
                         }).times(inPerTick)
                 ),
-                new DualNum<>(new double[] {
+                new DualNum<>(new double[]{
                         headingDelta,
                         headingVel,
                 })
@@ -126,5 +107,10 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         lastHeading = heading;
 
         return twist;
+    }
+
+    public static class Params {
+        public double parYTicks = 0.0; // y position of the parallel encoder (in tick units)
+        public double perpXTicks = 0.0; // x position of the perpendicular encoder (in tick units)
     }
 }

@@ -14,36 +14,43 @@ public final class specAutoOld extends LinearOpMode {
 
     DcMotor verticalViper = null;
     Servo clawL, clawR;
-    public void close(){
+
+    public void close() {
         clawL.setPosition(0.4875);
         clawR.setPosition(0.4625);
     }
-    public void open(){
+
+    public void open() {
         clawL.setPosition(0.3);
         clawR.setPosition(0.7);
     }
-    public void moveVert(int pos){
+
+    public void moveVert(int pos) {
         verticalViper.setTargetPosition(pos);
         verticalViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         verticalViper.setPower(1);
     }
-    public void startRaise(){
+
+    public void startRaise() {
         moveVert(-6000);
     }
-    public void hangSpec(){
+
+    public void hangSpec() {
         moveVert(-3500);
         sleep(3000);
         open();
         sleep(1500);
         moveVert(0);
     }
-    public void pickup(){
+
+    public void pickup() {
         moveVert(0);
         close();
         sleep(500);
         startRaise();
         sleep(500);
     }
+
     public void runOpMode() throws InterruptedException {
         verticalViper = hardwareMap.dcMotor.get("Viper_Vertical");
         clawL = hardwareMap.servo.get("Claw_Left");
@@ -59,25 +66,25 @@ public final class specAutoOld extends LinearOpMode {
         verticalViper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         Pose2d beginPose = new Pose2d(9, -64, Math.toRadians(270));
-        Pose2d specCenter = new Pose2d(0,-33.3,Math.toRadians(270));
-        Pose2d spec1 = new Pose2d(-9,-33.3,Math.toRadians(270));
-        Pose2d spec2 = new Pose2d(-3,-33.3,Math.toRadians(270));
-        Pose2d spec3 = new Pose2d(0,-33.3,Math.toRadians(270));
+        Pose2d specCenter = new Pose2d(0, -33.3, Math.toRadians(270));
+        Pose2d spec1 = new Pose2d(-9, -33.3, Math.toRadians(270));
+        Pose2d spec2 = new Pose2d(-3, -33.3, Math.toRadians(270));
+        Pose2d spec3 = new Pose2d(0, -33.3, Math.toRadians(270));
         Pose2d sampleStart = new Pose2d(36, -36.8, Math.toRadians(90));
-        Pose2d sampleUp = new Pose2d(36,-10,Math.toRadians(90));
-        Vector2d rotatePoint = new Vector2d(0,-48);
+        Pose2d sampleUp = new Pose2d(36, -10, Math.toRadians(90));
+        Vector2d rotatePoint = new Vector2d(0, -48);
 
-        Pose2d sam1 = new Pose2d(45,-20, Math.toRadians(90));
-        Pose2d sam2 = new Pose2d(53,-20, Math.toRadians(90));
-        Pose2d sam3 = new Pose2d(61,-20, Math.toRadians(90));
+        Pose2d sam1 = new Pose2d(45, -20, Math.toRadians(90));
+        Pose2d sam2 = new Pose2d(53, -20, Math.toRadians(90));
+        Pose2d sam3 = new Pose2d(61, -20, Math.toRadians(90));
 
         Pose2d net1 = new Pose2d(45, -57, Math.toRadians(90));
         Pose2d net2 = new Pose2d(53, -57, Math.toRadians(90));
         Pose2d net3 = new Pose2d(61, -57, Math.toRadians(90));
 
         Pose2d waitArea = new Pose2d(58, -36, Math.toRadians(90));
-        Pose2d park = new Pose2d(38,0,Math.toRadians(270));
-        Pose2d specCollect = new Pose2d(55,-58, Math.toRadians(90));
+        Pose2d park = new Pose2d(38, 0, Math.toRadians(270));
+        Pose2d specCollect = new Pose2d(55, -58, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 

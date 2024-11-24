@@ -14,36 +14,43 @@ public final class specAutoStrafe extends LinearOpMode {
 
     DcMotor verticalViper = null;
     Servo clawL, clawR;
-    public void close(){
+
+    public void close() {
         clawL.setPosition(0.4875);
         clawR.setPosition(0.4625);
     }
-    public void open(){
+
+    public void open() {
         clawL.setPosition(0.3);
         clawR.setPosition(0.7);
     }
-    public void moveVert(int pos){
+
+    public void moveVert(int pos) {
         verticalViper.setTargetPosition(pos);
         verticalViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         verticalViper.setPower(1);
     }
-    public void startRaise(){
+
+    public void startRaise() {
         moveVert(-6000);
     }
-    public void hangSpec(){
+
+    public void hangSpec() {
         moveVert(-3500);
         sleep(3000);
         open();
         sleep(1500);
         moveVert(0);
     }
-    public void pickup(){
+
+    public void pickup() {
         moveVert(0);
         close();
         sleep(500);
         startRaise();
         sleep(500);
     }
+
     public void runOpMode() throws InterruptedException {
         verticalViper = hardwareMap.dcMotor.get("Viper_Vertical");
         clawL = hardwareMap.servo.get("Claw_Left");

@@ -3,11 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.*;
 
 // Send Code And Operating Mode To Game Board
 @TeleOp(name = "Full Bot Drive", group = "MCA EAGLES PROGRAMS")
@@ -91,30 +87,22 @@ public class fullBotDrive extends LinearOpMode {
             // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
             if (gamepad2.left_stick_y < 0 && viperV.getCurrentPosition() > -11500) {
                 viperV.setPower(gamepad2.left_stick_y * speedFactor);
-            }
-
-            else if (gamepad2.left_stick_y > 0) {
+            } else if (gamepad2.left_stick_y > 0) {
                 viperV.setPower(gamepad2.left_stick_y * speedFactor);
-            }
-
-            else {
+            } else {
                 viperV.setPower(0);
             }
 
 
-            if (gamepad2.x){
-                suspend=true;
+            if (gamepad2.x) {
+                suspend = true;
             }
             // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
             if (gamepad2.right_stick_y < 0 && viperH.getCurrentPosition() > -1000) {
                 viperH.setPower(gamepad2.right_stick_y * speedFactor);
-            }
-
-            else if (gamepad2.right_stick_y > 0) {
+            } else if (gamepad2.right_stick_y > 0) {
                 viperH.setPower(gamepad2.right_stick_y * speedFactor);
-            }
-
-            else {
+            } else {
                 viperH.setPower(0);
             }
 
@@ -167,17 +155,11 @@ public class fullBotDrive extends LinearOpMode {
 
             if (gamepad2.dpad_down) {
                 wrist.setPosition(0.93);
-            }
-
-            else if (gamepad2.dpad_left) {
+            } else if (gamepad2.dpad_left) {
                 wrist.setPosition(0.325);
-            }
-
-            else if (gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_up) {
                 wrist.setPosition(0.58);
-            }
-
-            else if (gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_right) {
                 wrist.setPosition(0.325);
                 sleep(1000);
 
@@ -192,9 +174,7 @@ public class fullBotDrive extends LinearOpMode {
 
             if (gamepad2.right_bumper) {
                 bucket.setPosition(0.7);
-            }
-
-            else if (gamepad2.left_bumper) {
+            } else if (gamepad2.left_bumper) {
                 bucket.setPosition(0);
             }
 

@@ -22,12 +22,9 @@
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import android.util.Size;
-
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.SortOrder;
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
@@ -62,11 +59,9 @@ import java.util.List;
 
 @Disabled
 @TeleOp(name = "Concept: Vision Color-Locator", group = "Concept")
-public class ConceptVisionColorLocator extends LinearOpMode
-{
+public class ConceptVisionColorLocator extends LinearOpMode {
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         /* Build a "Color Locator" vision processor based on the ColorBlobLocatorProcessor class.
          * - Specify the color range you are looking for.  You can use a predefined color, or create you own color range
          *     .setTargetColorRange(ColorRange.BLUE)                      // use a predefined color match
@@ -137,8 +132,7 @@ public class ConceptVisionColorLocator extends LinearOpMode
         telemetry.setDisplayFormat(Telemetry.DisplayFormat.MONOSPACE);
 
         // WARNING:  To be able to view the stream preview on the Driver Station, this code runs in INIT mode.
-        while (opModeIsActive() || opModeInInit())
-        {
+        while (opModeIsActive() || opModeInInit()) {
             telemetry.addData("preview on/off", "... Camera Stream\n");
 
             // Read the current list
@@ -177,11 +171,10 @@ public class ConceptVisionColorLocator extends LinearOpMode
             telemetry.addLine(" Area Density Aspect  Center");
 
             // Display the size (area) and center location for each Blob.
-            for(ColorBlobLocatorProcessor.Blob b : blobs)
-            {
+            for (ColorBlobLocatorProcessor.Blob b : blobs) {
                 RotatedRect boxFit = b.getBoxFit();
                 telemetry.addLine(String.format("%5d  %4.2f   %5.2f  (%3d,%3d)",
-                          b.getContourArea(), b.getDensity(), b.getAspectRatio(), (int) boxFit.center.x, (int) boxFit.center.y));
+                        b.getContourArea(), b.getDensity(), b.getAspectRatio(), (int) boxFit.center.x, (int) boxFit.center.y));
             }
 
             telemetry.update();
