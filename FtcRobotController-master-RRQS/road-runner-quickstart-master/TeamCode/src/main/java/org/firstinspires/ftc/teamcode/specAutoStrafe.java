@@ -12,7 +12,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 @Autonomous(name = "Specimen Auto Strafe", group = "MCA Eagles Programs")
 public final class specAutoStrafe extends LinearOpMode {
 
-    DcMotor verticalViper = null;
+    DcMotor viperVL = null;
+    DcMotor viperVR = null;
     Servo clawL, clawR;
 
     public void close() {
@@ -26,9 +27,13 @@ public final class specAutoStrafe extends LinearOpMode {
     }
 
     public void moveVert(int pos) {
-        verticalViper.setTargetPosition(pos);
-        verticalViper.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        verticalViper.setPower(1);
+        viperVL.setTargetPosition(pos);
+        viperVL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperVL.setPower(1);
+
+        viperVR.setTargetPosition(pos);
+        viperVR.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        viperVR.setPower(1);
     }
 
     public void startRaise() {
@@ -52,7 +57,8 @@ public final class specAutoStrafe extends LinearOpMode {
     }
 
     public void runOpMode() throws InterruptedException {
-        verticalViper = hardwareMap.dcMotor.get("Viper_Vertical");
+        viperVL = hardwareMap.dcMotor.get("Viper_Vertical_Left");
+        viperVR = hardwareMap.dcMotor.get("Viper_Vertical_Right");
         clawL = hardwareMap.servo.get("Claw_Left");
         clawR = hardwareMap.servo.get("Claw_Right");
 
@@ -62,8 +68,11 @@ public final class specAutoStrafe extends LinearOpMode {
         Servo bucket = hardwareMap.servo.get("Bucket");
         bucket.setPosition(0.7);
 
-        verticalViper.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        verticalViper.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        viperVL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        viperVL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        viperVR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        viperVR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         Pose2d beginPose = new Pose2d(9, -64, Math.toRadians(270));
         Pose2d specCenter = new Pose2d(0, -33.3, Math.toRadians(270));

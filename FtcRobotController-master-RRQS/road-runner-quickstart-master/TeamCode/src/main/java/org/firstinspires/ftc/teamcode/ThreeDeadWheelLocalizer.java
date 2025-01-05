@@ -6,6 +6,8 @@ import com.acmerobotics.roadrunner.ftc.*;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.sun.tools.javac.tree.DCTree;
+
 import org.firstinspires.ftc.teamcode.messages.ThreeDeadWheelInputsMessage;
 
 @Config
@@ -16,10 +18,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
     private boolean initialized;
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
-        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Front_Left")));
-        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Back_Right")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Front_Right")));
-
+        par0 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Front_Left"))); // Right From Front, Port 0
+        par1 = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Back_Right"))); // Left From Front, Port 3
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "Front_Right"))); // Back, Port 1
         par1.setDirection(DcMotorSimple.Direction.REVERSE);
         perp.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -77,9 +78,9 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
     }
 
     public static class Params {
-        public double par0XTicks = -4.25; // x position of the first parallel encoder (in tick units) // -4.25, 5
-        public double par1XTicks = 4.25; // x position of the second parallel encoder (in tick units) // 4.25, 5
-        public double perpYTicks = -5.875; // y position of the perpendicular encoder (in tick units) // 0, 5.875
+        public double par0XTicks = -5; // x position of the first parallel encoder (in tick units) // -5, 3.65 (Right from front)
+        public double par1XTicks = 3.75; // x position of the second parallel encoder (in  tick units) // 3.75, 3.65
+        public double perpYTicks = -7.25; // y position of the perpendicular encoder (in tick units) // -7.25, 5.875
 
         public double par0YTicks = -1504.6003651678993; // y position of the first parallel encoder (in tick units) // -4.25, 5
         public double par1YTicks = 1415.2289278694032; // y position of the second parallel encoder (in tick units) // 4.25, 5

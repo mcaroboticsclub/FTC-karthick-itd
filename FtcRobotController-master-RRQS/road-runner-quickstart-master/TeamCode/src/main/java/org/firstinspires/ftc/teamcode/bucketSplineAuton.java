@@ -6,13 +6,14 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.*;
+            import com.qualcomm.robotcore.hardware.*;
 
-/*
+/**
  * Test the dashboard gamepad integration.
  */
-@Autonomous(name = "Spec + Bucket Spline", group = "MCA Eagles Group")
-public class buckAutoSpline extends LinearOpMode {
+@Autonomous(name = "Bucket Spline Auton", group = "MCA Eagles Programs")
+public class bucketSplineAuton extends LinearOpMode {
+
     // Define All Motors
     DcMotor frontLeft = null;
     DcMotor frontRight = null;
@@ -107,44 +108,42 @@ public class buckAutoSpline extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Create the mecanum drivetrain in roadrunner with the defined hardware map and the initial pose of the robot.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-15.54, -60.34, Math.toRadians(270.00)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-17.14, -60.34, Math.toRadians(270.00)));
 
-        // Define the bot's path as an action sequence. Using splines.
+        // Define a trajectory.
         Action bucketTrajectory = drive
 
-                // Start at the initial position against the wall facing the driver side wall.
-                .actionBuilder(new Pose2d(-15.54, -60.34, Math.toRadians(270.00)))
+                // Start position by the driver side wall facing the wall.
+                .actionBuilder(new Pose2d(-17.14, -60.34, Math.toRadians(270.00)))
 
-                // Move to the submersible to hang a specimen, still facing the driver side wall.
-                .splineToLinearHeading(new Pose2d(-8.46, -34.06, Math.toRadians(270.00)), Math.toRadians(73.85))
+                // Move to bars to hang sample.
+                .splineToLinearHeading(new Pose2d(-9.83, -32.69, Math.toRadians(270.00)), Math.toRadians(69.30))
 
-                // Move to in front of the first sample,
-                // right of the rightmost sample on the left side of thè field, facing the sample.
-                .splineTo(new Vector2d(-36.80, -43.89), Math.toRadians(199.13))
-                .splineToLinearHeading(new Pose2d(-37.49, -26.06, Math.toRadians(180.00)), Math.toRadians(90.00))
+                // Move in front of the sample facing the left wall.
+                .splineTo(new Vector2d(-35.43, -42.97), Math.toRadians(201.89))
+                .splineToLinearHeading(new Pose2d(-39.54, -26.06, Math.toRadians(180.00)), Math.toRadians(117.76))
 
-                // Move to the basket and face diagonally away from the basket.
-                .splineToLinearHeading(new Pose2d(-57.37, -59.89, Math.toRadians(45.00)), Math.toRadians(236.77))
+                // Move to the basket facing away from the basket corner.
+                .splineToLinearHeading(new Pose2d(-59.66, -59.43, Math.toRadians(45.00)), Math.toRadians(238.41))
 
-                // Move to the right of the next sample, facing the sample.
-                .splineToLinearHeading(new Pose2d(-49.14, -26.06, Math.toRadians(180.00)), Math.toRadians(76.33))
+                // Move to the next sample facing the left wall.
+                .splineToLinearHeading(new Pose2d(-49.37, -26.29, Math.toRadians(180.00)), Math.toRadians(73.23))
 
-                // Move to the basket again, facing diagonally away from the basket.
-                .splineToLinearHeading(new Pose2d(-58.74, -58.29, Math.toRadians(45.00)), Math.toRadians(251.21))
+                // Move back to basket facing away from the basket.
+                .splineToLinearHeading(new Pose2d(-59.66, -59.20, Math.toRadians(45.00)), Math.toRadians(248.13))
 
-                // Move to the right of the last sample, facing the last sample.
-                // When moving away, move backwards first to avoid hitting the wall.
-                .splineToLinearHeading(new Pose2d(-60.11, -26.06, Math.toRadians(180.00)), Math.toRadians(89.59))
-                .splineTo(new Vector2d(-50.51, -26.97), Math.toRadians(-76.88))
+                // Move to the last sample facing the left wall. Move away from the wall before moving on to avoid a collision.
+                .splineToLinearHeading(new Pose2d(-56.00, -26.06, Math.toRadians(180.00)), Math.toRadians(88.81))
+                .splineTo(new Vector2d(-51.43, -43.89), Math.toRadians(-76.76))
 
-                // Move the basket one last time, facing diagonally away from the basket.
-                .splineToLinearHeading(new Pose2d(-59.66, -57.37, Math.toRadians(45.00)), Math.toRadians(270.00))
+                // Move to the basket one last time facing away from the wall.
+                .splineToLinearHeading(new Pose2d(-59.89, -59.20, Math.toRadians(45.00)), Math.toRadians(267.47))
 
-                // Move to the accent zone, turning to face the wall so we can do stage 1 ascent.
-                .splineTo(new Vector2d(-54.40, -11.89), Math.toRadians(82.63))
-                .splineToLinearHeading(new Pose2d(-17.37, 10.06, Math.toRadians(180.00)), Math.toRadians(30.70))
+                // Move to the ascension zone facing the left wall to do L1 suspension.
+                .splineTo(new Vector2d(-56.46, -14.17), Math.toRadians(88.25))
+                .splineToLinearHeading(new Pose2d(-24.00, 10.51, Math.toRadians(180.00)), Math.toRadians(31.80))
 
-                // Build the completed path.
+                // End trajectory.
                 .build();
 
         // Wait for the start button to be pressed.

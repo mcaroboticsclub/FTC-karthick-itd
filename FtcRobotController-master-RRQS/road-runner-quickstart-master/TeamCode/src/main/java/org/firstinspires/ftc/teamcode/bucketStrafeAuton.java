@@ -8,11 +8,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.*;
 
-/*
+/**
  * Test the dashboard gamepad integration.
  */
-@Autonomous(name = "Spec + Bucket Strafe", group = "MCA Eagles Group")
-public class buckAutoStrafe extends LinearOpMode {
+@Autonomous(name = "Bucket Strafe Auton", group = "MCA Eagles Programs")
+public class bucketStrafeAuton extends LinearOpMode {
+
     // Define All Motors
     DcMotor frontLeft = null;
     DcMotor frontRight = null;
@@ -107,44 +108,42 @@ public class buckAutoStrafe extends LinearOpMode {
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Create the mecanum drivetrain in roadrunner with the defined hardware map and the initial pose of the robot.
-        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-15.54, -60.34, Math.toRadians(270.00)));
+        MecanumDrive drive = new MecanumDrive(hardwareMap, new Pose2d(-17.14, -60.34, Math.toRadians(270.00)));
 
-        // Define the bot's path as an action sequence. Using splines.
+        // Define a trajectory.
         Action bucketTrajectory = drive
 
-                // Start at the initial position against the wall facing the driver side wall.
-                .actionBuilder(new Pose2d(-15.54, -60.34, Math.toRadians(270.00)))
+                // Start position by the driver side wall facing the wall.
+                .actionBuilder(new Pose2d(-17.14, -60.34, Math.toRadians(270.00)))
 
-                // Move to the submersible to hang a specimen, still facing the driver side wall.
-                .strafeToLinearHeading(new Vector2d(-8.46, -34.06), Math.toRadians(270.00))
+                // Move to bars to hang sample.
+                .strafeToLinearHeading(new Vector2d(-9.83, -32.69), Math.toRadians(270.00))
 
-                // Move to in front of the first sample,
-                // right of the rightmost sample on the left side of thè field, facing the sample.
-                .strafeTo(new Vector2d(-36.80, -43.89))
-                .strafeToLinearHeading(new Vector2d(-37.49, -26.06), Math.toRadians(180.00))
+                // Move in front of the sample facing the left wall.
+                .strafeTo(new Vector2d(-35.43, -42.97))
+                .strafeToLinearHeading(new Vector2d(-39.54, -26.06), Math.toRadians(180.00))
 
-                // Move to the basket and face diagonally away from the basket.
-                .strafeToLinearHeading(new Vector2d(-57.37, -59.89), Math.toRadians(45.00))
+                // Move to the basket facing away from the basket corner.
+                .strafeToLinearHeading(new Vector2d(-59.66, -59.43), Math.toRadians(45.00))
 
-                // Move to the right of the next sample, facing the sample.
-                .strafeToLinearHeading(new Vector2d(-49.14, -26.06), Math.toRadians(180.00))
+                // Move to the next sample facing the left wall.
+                .strafeToLinearHeading(new Vector2d(-49.37, -26.29), Math.toRadians(180.00))
 
-                // Move to the basket again, facing diagonally away from the basket.
-                .strafeToLinearHeading(new Vector2d(-58.74, -58.29), Math.toRadians(45.00))
+                // Move back to basket facing away from the basket.
+                .strafeToLinearHeading(new Vector2d(-59.66, -59.20), Math.toRadians(45.00))
 
-                // Move to the right of the last sample, facing the last sample.
-                // When moving away, move backwards first to avoid hitting the wall.
-                .strafeToLinearHeading(new Vector2d(-60.11, -26.06), Math.toRadians(180))
-                .strafeTo(new Vector2d(-50.51, -26.97))
+                // Move to the last sample facing the left wall. Move away from the wall before moving on to avoid a collision.
+                .strafeToLinearHeading(new Vector2d(-56.00, -26.06), Math.toRadians(180.00))
+                .strafeTo(new Vector2d(-51.43, -43.89))
 
-                // Move the basket one last time, facing diagonally away from the basket.
-                .strafeToLinearHeading(new Vector2d(-59.66, -57.37), Math.toRadians(45.00))
+                // Move to the basket one last time facing away from the wall.
+                .strafeToLinearHeading(new Vector2d(-59.89, -59.20), Math.toRadians(45.00))
 
-                // Move to the accent zone, turning to face the wall so we can do stage 1 ascent.
-                .strafeTo(new Vector2d(-54.40, -11.89))
-                .strafeToLinearHeading(new Vector2d(-17.37, 10.06), Math.toRadians(180.00))
+                // Move to the ascension zone facing the left wall to do L1 suspension.
+                .strafeTo(new Vector2d(-56.46, -14.17))
+                .strafeToLinearHeading(new Vector2d(-24.00, 10.51), Math.toRadians(180.00))
 
-                // Build the completed path.
+                // End trajectory.
                 .build();
 
         // Wait for the start button to be pressed.

@@ -10,11 +10,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Disabled
 @Autonomous(name = "Dhikshith's Auton Test", group = "MCA Eagles Programs")
 public final class dhikTest extends LinearOpMode {
 
+    private static final Logger log = LoggerFactory.getLogger(dhikTest.class);
     DcMotor verticalViper = null;
     Servo clawL, clawR;
     CRServo intake = null;
@@ -99,7 +102,12 @@ public final class dhikTest extends LinearOpMode {
 //                .splineTo(new Vector2d(-69.25, -34.00), Math.toRadians(111.88)) //3rd samo
 //                .splineTo(new Vector2d(-62.21, -56.53), Math.toRadians(-72.30)) //3rd deposit
 
-        Action startToSam1 = drive.actionBuilder(beginPose)
+
+
+        Action startToBucket = drive.actionBuilder(beginPose)
+                .splineTo(basketZone.position, basketZone.heading)
+                .build();
+        Action basketToSam1 = drive.actionBuilder(beginPose)
                 .splineTo(sam1.position, sam1.heading)
                 .build();
         Action sam1ToBasket = drive.actionBuilder(sam1)
@@ -122,7 +130,10 @@ public final class dhikTest extends LinearOpMode {
         //Action combined = new SequentialAction(startToSpec,specCenterToSpec1, getAllSamples, goToSpecPickup, specCycle1);
         close();
         waitForStart();
-        Actions.runBlocking(startToSam1);
+        Actions.runBlocking(startToBucket);
+        open();
+        sleep(1000);
+        Actions.runBlocking(basketToSam1);
         pickupSam();
         sleep(1000);
         Actions.runBlocking(sam1ToBasket);
