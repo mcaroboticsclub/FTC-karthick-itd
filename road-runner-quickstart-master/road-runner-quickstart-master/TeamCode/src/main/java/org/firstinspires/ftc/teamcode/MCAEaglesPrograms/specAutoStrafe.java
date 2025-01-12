@@ -16,7 +16,6 @@ public final class specAutoStrafe extends LinearOpMode {
 
     DcMotorEx viperVL = null;
     DcMotorEx viperVR = null;
-    Servo clawL, clawR;
     Servo specClaw = null;
 
     public void close() {
@@ -28,7 +27,6 @@ public final class specAutoStrafe extends LinearOpMode {
     }
 
     public void moveVert(int pos) {
-
         viperVL.setTargetPosition(pos);
         viperVL.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         viperVL.setPower(1);
@@ -66,11 +64,7 @@ public final class specAutoStrafe extends LinearOpMode {
         viperVR = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Vertical_Right");
         specClaw = hardwareMap.servo.get("Specimen_Claw");
 
-        Servo rotWrist = hardwareMap.servo.get("Rotation_Wrist");
-        Servo vipWrist = hardwareMap.servo.get("Viper_Wrist");
-
         Servo bucket = hardwareMap.servo.get("Bucket");
-        //bucket.setPosition(0.7);
 
         viperVL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         viperVL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -81,7 +75,7 @@ public final class specAutoStrafe extends LinearOpMode {
         Pose2d beginPose = new Pose2d(9, -64, Math.toRadians(270));
         Pose2d specCenter = new Pose2d(0, -32.3, Math.toRadians(270));
         Pose2d spec1 = new Pose2d(-6, -32.3, Math.toRadians(270));
-        Pose2d spec2 = new Pose2d(0, -32.3, Math.toRadians(270));
+        Pose2d spec2 = new Pose2d(8, -32.3, Math.toRadians(270));
         Pose2d spec3 = new Pose2d(3, -32.3, Math.toRadians(270));
         Pose2d sampleStart = new Pose2d(36, -35.8, Math.toRadians(90));
         Pose2d sampleUp = new Pose2d(36, -10, Math.toRadians(90));
@@ -97,7 +91,8 @@ public final class specAutoStrafe extends LinearOpMode {
 
         Pose2d waitArea = new Pose2d(58, -55, Math.toRadians(90));
         Pose2d park = new Pose2d(38, 0, Math.toRadians(270));
-        Pose2d specCollect = new Pose2d(55, -67, Math.toRadians(90));
+//        Pose2d specCollect = new Pose2d(55, -67, Math.toRadians(90));
+        Pose2d specCollect = new Pose2d(45 , -67, Math.toRadians(90));
 
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
 
@@ -142,6 +137,7 @@ public final class specAutoStrafe extends LinearOpMode {
                 .splineTo(new Vector2d(-38.00, -27.35), Math.toRadians(133.72))
                 .splineTo(new Vector2d(-34.88, -11.23), Math.toRadians(79.02))
                 .build();
+
         Action goToSpecPickup = drive.actionBuilder(waitArea)
                 .strafeTo(specCollect.position)
                 .build();
@@ -155,6 +151,7 @@ public final class specAutoStrafe extends LinearOpMode {
                 .strafeTo(rotatePoint)
                 .strafeToLinearHeading(specCollect.position, specCollect.heading)
                 .build();
+
         Action specCycle2 = drive.actionBuilder(specCollect)
                 .strafeToLinearHeading(specCenter.position, specCenter.heading)
                 .strafeTo(spec3.position)
@@ -162,24 +159,34 @@ public final class specAutoStrafe extends LinearOpMode {
 
         //Action combined = new SequentialAction(startToSpec,specCenterToSpec1, getAllSamples, goToSpecPickup, specCycle1);
         close();
+
         waitForStart();
+
         startRaise();
         sleep(2000);
+
         Actions.runBlocking(startToSpec);
+
         Actions.runBlocking(specCenterToSpec1);
         hangSpec();
+
         Actions.runBlocking(getAllSamples);
         sleep(1000);
 
         Actions.runBlocking(goToSpecPickup);
+
         open();
         startDescent();
         sleep(500);
+
         close();
         sleep(2000);
+
         startRaise();
         sleep(1000);
+
         Actions.runBlocking(specCycle1);
+
         hangSpec();
         sleep(2000);
 
