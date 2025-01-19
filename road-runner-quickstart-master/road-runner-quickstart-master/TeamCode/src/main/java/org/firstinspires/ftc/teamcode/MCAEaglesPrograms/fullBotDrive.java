@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.MCAEaglesPrograms;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.*;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 
 // Send Code And Operating Mode To Game Board
 @TeleOp(name = "Full Bot Drive", group = "MCA EAGLES PROGRAMS")
@@ -65,7 +68,7 @@ public class fullBotDrive extends LinearOpMode {
         DcMotorEx[] vertical = {viperVL, viperVR};
 
         // Make vipers run using constant speed of 300 ticks per second.
-        for(DcMotorEx viperV : vertical) {
+        for (DcMotorEx viperV : vertical) {
             viperV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             viperV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             viperV.setVelocity(300);
@@ -89,24 +92,20 @@ public class fullBotDrive extends LinearOpMode {
             frontRight.setPower((-gamepad1.left_stick_y - gamepad1.left_stick_x - gamepad1.right_stick_x) * speedFactor);
             backRight.setPower((-gamepad1.left_stick_y + gamepad1.left_stick_x - gamepad1.right_stick_x) * speedFactor);
 
-            // If gamepad 2's right stick is pushed up or down, move the horizontal viper forwards or backwards.
+            // If gamepad 2's left stick is pushed up or down, move the vertical viper forwards or backwards.
             if (gamepad2.left_stick_y < 0 && viperVL.getCurrentPosition() > -4300) {
                 viperVL.setPower(gamepad2.left_stick_y * speedFactor);
                 viperVLTargetPos = viperVL.getCurrentPosition();
 
                 viperVR.setPower(viperVL.getPower());
                 viperVRTargetPos = viperVR.getCurrentPosition();
-            }
-
-            else if (gamepad2.left_stick_y > 0) {
+            } else if (gamepad2.left_stick_y > 0) {
                 viperVL.setPower(gamepad2.left_stick_y * speedFactor);
                 viperVLTargetPos = viperVL.getCurrentPosition();
 
                 viperVR.setPower(viperVL.getPower());
                 viperVRTargetPos = viperVR.getCurrentPosition();
-            }
-
-            else {
+            } else {
                 viperVL.setPower(0);
                 viperVR.setPower(0);
 //                viperVL.setTargetPosition(viperVLTargetPos);
@@ -128,35 +127,26 @@ public class fullBotDrive extends LinearOpMode {
 
             if (gamepad2.a) {
                 specClaw.setPosition(0.6);
-            }
-
-            else if (gamepad2.b) {
+            } else if (gamepad2.b) {
                 specClaw.setPosition(0.4);
             }
 
             if (gamepad2.x) {
                 sampClaw.setPosition(0.765);
-            }
-
-            else if (gamepad2.y) {
+            } else if (gamepad2.y) {
                 sampClaw.setPosition(0.5);
             }
 
             if (gamepad2.dpad_down) {
                 vipWrist.setPosition(0.57);
                 rotWrist.setPosition(0.54);
-            }
-
-            else if (gamepad2.dpad_left) {
+            } else if (gamepad2.dpad_left) {
                 vipWrist.setPosition(0.98);
                 rotWrist.setPosition(0.85); // Only down to left.
-            }
-            else if (gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_up) {
                 vipWrist.setPosition(0.9);
                 rotWrist.setPosition(0.2);
-            }
-
-            else if (gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_right) {
                 vipWrist.setPosition(0.98);
                 rotWrist.setPosition(0.85); // Only down to left.
 
@@ -171,9 +161,7 @@ public class fullBotDrive extends LinearOpMode {
 
             if (gamepad2.right_bumper) {
                 bucket.setPosition(0.08);
-            }
-
-            else if (gamepad2.left_bumper) {
+            } else if (gamepad2.left_bumper) {
                 bucket.setPosition(0.825);
             }
 

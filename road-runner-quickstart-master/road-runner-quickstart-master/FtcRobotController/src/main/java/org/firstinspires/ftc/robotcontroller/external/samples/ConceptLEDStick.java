@@ -33,7 +33,6 @@ package org.firstinspires.ftc.robotcontroller.external.samples;
 */
 
 import android.graphics.Color;
-
 import com.qualcomm.hardware.sparkfun.SparkFunLEDStick;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -62,11 +61,10 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name = "Concept: LED Stick", group = "Concept")
 @Disabled
 public class ConceptLEDStick extends OpMode {
+    private final static double END_GAME_TIME = 120 - 30;
     private boolean wasUp;
     private boolean wasDown;
     private int brightness = 5;  // this needs to be between 0 and 31
-    private final static double END_GAME_TIME = 120 - 30;
-
     private SparkFunLEDStick ledStick;
 
     @Override
@@ -87,7 +85,7 @@ public class ConceptLEDStick extends OpMode {
         telemetry.addLine("Hold the B button to turn red");
         telemetry.addLine("Hold the left bumper to turn off");
         telemetry.addLine("Use DPAD Up/Down to change brightness");
-        
+
         if (getRuntime() > END_GAME_TIME) {
             int[] ledColors = {Color.RED, Color.YELLOW, Color.RED, Color.YELLOW, Color.RED,
                     Color.YELLOW, Color.RED, Color.YELLOW, Color.RED, Color.YELLOW};

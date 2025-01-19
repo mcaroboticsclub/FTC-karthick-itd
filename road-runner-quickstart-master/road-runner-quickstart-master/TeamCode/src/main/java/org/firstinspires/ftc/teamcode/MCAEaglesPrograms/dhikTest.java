@@ -103,7 +103,6 @@ public final class dhikTest extends LinearOpMode {
 //                .splineTo(new Vector2d(-62.21, -56.53), Math.toRadians(-72.30)) //3rd deposit
 
 
-
         Action startToBucket = drive.actionBuilder(beginPose)
                 .splineTo(basketZone.position, basketZone.heading)
                 .build();
