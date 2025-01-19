@@ -189,6 +189,7 @@ public final class specAutoStrafe extends LinearOpMode {
 //        Actions.runBlocking(goToWaitAfterSpec2);
 //        sleep(1000);
 
+        // TODO: This crashes into the wall but works. Fix timings, use actions.
         Actions.runBlocking(goToSpecPickup3);
 
         startDescent();
