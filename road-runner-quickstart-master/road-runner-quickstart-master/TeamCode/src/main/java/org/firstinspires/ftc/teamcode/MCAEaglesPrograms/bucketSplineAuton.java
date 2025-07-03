@@ -87,7 +87,7 @@ public class bucketSplineAuton extends LinearOpMode {
                 vipWrist.setPosition(0.57);
                 rotWrist.setPosition(0.54);
                 break;
-            case "L":
+            case "c L":
                 vipWrist.setPosition(0.98);
                 rotWrist.setPosition(0.85);
                 break;

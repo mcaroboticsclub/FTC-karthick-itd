@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 @TeleOp(name = "Full Bot Drive", group = "MCA EAGLES PROGRAMS")
 public class fullBotDrive extends LinearOpMode {
 
+    // Define a max speed to control all bot functions.
     double speedFactor = 1.0;
 
     // Define All Motors
@@ -22,14 +23,18 @@ public class fullBotDrive extends LinearOpMode {
     DcMotorEx viperVL = null;
     DcMotorEx viperVR = null;
     DcMotorEx viperH = null;
+    DcMotorEx armMotor = null;
 
     // Define All Servos
+    Servo specArm = null;
     Servo specClaw = null;
-    Servo sampClaw = null;
-    Servo vipWrist = null;
-    Servo rotWrist = null;
-    Servo bucket = null;
+    Servo specRot = null;
+    Servo sampleV = null;
+    Servo sampleH = null;
+    Servo sampleRot = null;
+    Servo sampleClaw = null;
 
+    int sampleVCycle = 1;
 
     // Define opmode.
     @Override
@@ -43,13 +48,16 @@ public class fullBotDrive extends LinearOpMode {
         viperVL = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Vertical_Left");
         viperVR = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Vertical_Right");
         viperH = (DcMotorEx) hardwareMap.dcMotor.get("Viper_Horizontal");
+        armMotor = (DcMotorEx) hardwareMap.dcMotor.get("Spec_Arm_Motor");
 
         // Hardware Map Servos
-        specClaw = hardwareMap.servo.get("Specimen_Claw");
-        sampClaw = hardwareMap.servo.get("Sample_Claw");
-        vipWrist = hardwareMap.servo.get("Viper_Wrist");
-        rotWrist = hardwareMap.servo.get("Rotation_Wrist");
-        bucket = hardwareMap.servo.get("Bucket");
+        specArm = hardwareMap.servo.get("Spec_Arm");
+        specClaw = hardwareMap.servo.get("Spec_Claw");
+        specRot = hardwareMap.servo.get("Spec_Rot");
+        sampleV = hardwareMap.servo.get("Sample_V");
+        sampleH = hardwareMap.servo.get("Sample_H");
+        sampleRot = hardwareMap.servo.get("Sample_Rot");
+        sampleClaw = hardwareMap.servo.get("Sample_Claw");
 
         // Set All Motors To Brake
         frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,7 +67,7 @@ public class fullBotDrive extends LinearOpMode {
         viperVL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         viperVR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         viperH.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        armMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         // Reverse Direction Of One Side's Wheel Motors
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -67,7 +75,7 @@ public class fullBotDrive extends LinearOpMode {
         // Make an array of vertical vipers to store them.
         DcMotorEx[] vertical = {viperVL, viperVR};
 
-        // Make vipers run using constant speed of 300 ticks per second.
+        // Make vipers run using a constant speed of 300 ticks per second.
         for (DcMotorEx viperV : vertical) {
             viperV.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             viperV.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -125,55 +133,63 @@ public class fullBotDrive extends LinearOpMode {
                 viperH.setPower(0);
             }
 
-            if (gamepad2.a) {
-                specClaw.setPosition(0.6);
-            } else if (gamepad2.b) {
-                specClaw.setPosition(0.4);
+            if (gamepad2.left_trigger > 0) {
+                armMotor.setPower(-gamepad2.left_trigger * speedFactor);
             }
 
-            if (gamepad2.x) {
-                sampClaw.setPosition(0.765);
-            } else if (gamepad2.y) {
-                sampClaw.setPosition(0.5);
+            else if (gamepad2.right_trigger > 0) {
+                armMotor.setPower(gamepad2.right_trigger * speedFactor);
             }
 
-            if (gamepad2.dpad_down) {
-                vipWrist.setPosition(0.57);
-                rotWrist.setPosition(0.54);
-            } else if (gamepad2.dpad_left) {
-                vipWrist.setPosition(0.98);
-                rotWrist.setPosition(0.85); // Only down to left.
-            } else if (gamepad2.dpad_up) {
-                vipWrist.setPosition(0.9);
-                rotWrist.setPosition(0.2);
-            } else if (gamepad2.dpad_right) {
-                vipWrist.setPosition(0.98);
-                rotWrist.setPosition(0.85); // Only down to left.
-
-                sleep(600);
-                sampClaw.setPosition(0.5);
-
-                sleep(500);
-
-                vipWrist.setPosition(0.9);
-                rotWrist.setPosition(0.2);
+            if (gamepad2.left_trigger != 0) {
+                specArm.setPosition(specArm.getPosition() + gamepad2.left_trigger * 0.01 * speedFactor);
             }
 
-            if (gamepad2.right_bumper) {
-                bucket.setPosition(0.08);
-            } else if (gamepad2.left_bumper) {
-                bucket.setPosition(0.825);
+            else if (gamepad2.right_trigger != 0) {
+                specArm.setPosition(specArm.getPosition() - gamepad2.right_trigger * 0.01 * speedFactor);
             }
 
-            // If gamepad 1's a button is pushed, set the max speed of all parts on the robot to full power.
+            if (gamepad1.dpad_up) {
+                specArm.setPosition(0);
+            }
+
+            else if (gamepad1.dpad_down) {
+                specArm.setPosition(0.5);
+            }
+
+            else if (gamepad1.dpad_left) {
+                specArm.setPosition(0.8);
+            }
+
+            else if (gamepad1.dpad_right) {
+                specArm.setPosition(0.2);
+            }
+
             if (gamepad1.a) {
-                speedFactor = 1.0;
+                specClaw.setPosition(0.5);
             }
 
-            // Otherwise, if gamepad 1's b button is pushed, set the max speed to 50% power.
             else if (gamepad1.b) {
-                speedFactor = 0.5;
+                specClaw.setPosition(0.7);
             }
+
+            if (gamepad2.a) {
+                specRot.setPosition(specRot.getPosition() + 0.02 * speedFactor);
+            }
+
+            else if (gamepad2.b) {
+                specRot.setPosition(specRot.getPosition() - 0.02 * speedFactor);
+            }
+
+//            // If gamepad 1's a button is pushed, set the max speed of all parts on the robot to full power.
+//            if (gamepad1.a) {
+//                speedFactor = 1.0;
+//            }
+//
+//            // Otherwise, if gamepad 1's b button is pushed, set the max speed to 50% power.
+//            else if (gamepad1.b) {
+//                speedFactor = 0.5;
+//            }
 
             // Add telemetry data for all parts of the robot, for all motors and servos, for power and position, and for the current speed factor.
             telemetry.addData("Front Left Motor Power", frontLeft.getPower());
@@ -190,11 +206,16 @@ public class fullBotDrive extends LinearOpMode {
             telemetry.addData("Viper Right Vertical Motor Position", viperVR.getCurrentPosition());
             telemetry.addData("Viper Horizontal Motor Power", viperH.getPower());
             telemetry.addData("Viper Horizontal Motor Position", viperH.getCurrentPosition());
-            telemetry.addData("Specimen Claw Servo Position", specClaw.getPosition());
-            telemetry.addData("Sample Claw Servo Position", sampClaw.getPosition());
-            telemetry.addData("Viper Wrist Servo Position", vipWrist.getPosition());
-            telemetry.addData("Rotation Wrist Servo Position", rotWrist.getPosition());
-            telemetry.addData("Bucket Servo Position", bucket.getPosition());
+            telemetry.addData("Arm Motor Power", armMotor.getPower());
+            telemetry.addData("Arm Motor Position", armMotor.getCurrentPosition());
+            telemetry.addData("Specimen Arm", specArm.getPosition());
+            telemetry.addData("Specimen Rotation", specRot.getPosition());
+            telemetry.addData("Specimen Claw", specClaw.getPosition());
+            telemetry.addData("Sample Vertical Arm", sampleV.getPosition());
+            telemetry.addData("Sample Horizontal Arm", sampleH.getPosition());
+            telemetry.addData("Sample Rotation", sampleRot.getPosition());
+            telemetry.addData("Sample Claw", sampleClaw.getPosition());
+            telemetry.addData("Sample Vertical Cycle", sampleVCycle);
             telemetry.addData("Speed Factor", speedFactor);
 
             // Update the telemetry.
